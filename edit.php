@@ -33,14 +33,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $phone = $_POST['phone'];
     $email = $_POST['email'];
 
-    if ($restaurant_id) {
-        // Update restaurant and set the last_updated field to the current timestamp
-        $stmt = $pdo->prepare("UPDATE restaurants SET name = ?, address = ?, phone_number = ?, email = ?, last_updated = NOW() WHERE restaurant_id = ?");
-        $stmt->execute([$name, $address, $phone, $email, $restaurant_id]);
+    // Handle image upload
+    if (!empty($_FILES['image']['name'])) {
+        $imageName = $_FILES['image']['name'];
+        $imageTmpName = $_FILES['image']['tmp_name'];
+        $imagePath = '/uploads/' . basename($imageName);
+        move_uploaded_file($imageTmpName, $_SERVER['DOCUMENT_ROOT'] . $imagePath);
     } else {
-        // Insert a new restaurant and set the added_by field to the logged-in user and last_updated to NOW
-        $stmt = $pdo->prepare("INSERT INTO restaurants (name, address, phone_number, email, added_by, last_updated) VALUES (?, ?, ?, ?, ?, NOW())");
-        $stmt->execute([$name, $address, $phone, $email, $added_by]);
+        $imagePath = null;  // Set to null if no image is uploaded
+    }
+
+    if ($restaurant_id) {
+        // Update restaurant
+        $stmt = $pdo->prepare("UPDATE restaurants SET name = ?, address = ?, phone_number = ?, email = ?, image_path = ?, last_updated = NOW() WHERE restaurant_id = ?");
+        $stmt->execute([$name, $address, $phone, $email, $imagePath, $restaurant_id]);
+    } else {
+        // Insert new restaurant
+        $stmt = $pdo->prepare("INSERT INTO restaurants (name, address, phone_number, email, added_by, image_path, last_updated) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+        $stmt->execute([$name, $address, $phone, $email, $added_by, $imagePath]);
     }
 
     header('Location: index.php');
@@ -89,7 +99,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     <div class="card restaurant-card">
         <div class="card-body">
-            <form method="POST" action="">
+            <form method="POST" action="" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($name); ?>" required>
@@ -105,6 +115,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" required>
+                </div>
+                    <!-- Other fields here -->
+                <div class="form-group">
+                    <label for="image">Upload Image</label>
+                    <input type="file" class="form-control" id="image" name="image" accept="image/*">
                 </div>
                 <div class="text-center">
                     <button type="submit" class="btn btn-primary btn-lg">Save</button>

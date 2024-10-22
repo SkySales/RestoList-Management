@@ -71,6 +71,9 @@ $restaurants = $stmt->fetchAll();
                 <div class="card restaurant-card">
                     <div class="card-body">
                         <h5 class="card-title"><?php echo htmlspecialchars($restaurant['name']); ?></h5>
+                        <?php if (!empty($restaurant['image_path'])): ?>
+                            <img src="<?php echo $restaurant['image_path']; ?>" alt="Restaurant Image" class="img-fluid mb-3" style="max-height: 200px;">
+                        <?php endif; ?>
                         <p class="card-text">
                             <strong>Address:</strong> <?php echo htmlspecialchars($restaurant['address']); ?><br>
                             <strong>Phone:</strong> <?php echo htmlspecialchars($restaurant['phone_number']); ?><br>
@@ -102,9 +105,9 @@ $restaurants = $stmt->fetchAll();
         cards.forEach(card => {
             const title = card.querySelector('.card-title').textContent.toLowerCase();
             if (title.includes(searchQuery)) {
-                card.parentElement.style.display = ''; // Show card
+                card.parentElement.style.display = '';
             } else {
-                card.parentElement.style.display = 'none'; // Hide card
+                card.parentElement.style.display = 'none';
             }
         });
     });
