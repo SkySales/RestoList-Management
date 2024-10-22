@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS `restaurants` (
   `email` varchar(255) NOT NULL,
   `added_by` int(11) NOT NULL,
   `last_updated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `image_path` VARCHAR(255) NULL,
   PRIMARY KEY (`restaurant_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
