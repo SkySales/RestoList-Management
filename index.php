@@ -49,6 +49,11 @@ $restaurants = $stmt->fetchAll();
                         <i class="fas fa-sign-out-alt"></i> 🔒 Logout
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href=" ">
+                        <i class="fa-solid fa-user"> </i> Hi, <?php echo htmlspecialchars($_SESSION['username']); ?>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
